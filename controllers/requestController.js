@@ -16,7 +16,14 @@ exports.createRequest = async (req, res) => {
         });
         res.status(201).json({ success: true, data: request });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'فشل في إنشاء الطلب', error: error.message });
+        console.error('Request creation failed:', error);
+        const status = error.name === 'ValidationError' || error.name === 'CastError'
+            ? 400
+            : error.code === 11000 ? 409 : 500;
+        res.status(status).json({
+            success: false,
+            message: status === 400 ? 'بيانات الطلب غير صحيحة' : status === 409 ? 'الطلب موجود مسبقًا' : 'فشل في إنشاء الطلب'
+        });
     }
 };
 
@@ -25,6 +32,7 @@ exports.getUserRequests = async (req, res) => {
         const requests = await Request.find({ user: req.user.id }).sort({ createdAt: -1 });
         res.status(200).json({ success: true, count: requests.length, data: requests });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'فشل في جلب الطلبات', error: error.message });
+        console.error('Fetching user requests failed:', error);
+        res.status(500).json({ success: false, message: 'فشل في جلب الطلبات' });
     }
 };

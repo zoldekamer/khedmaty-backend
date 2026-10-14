@@ -1,0 +1,15 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Run backend tests",
+			"type": "shell",
+			"command": "npm.cmd",
+			"args": [
+				"test"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		}
+	]
+}

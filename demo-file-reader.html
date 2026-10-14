@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ملف تجريبي</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: #f4f4f4;
+        padding: 32px;
+      }
+      .card {
+        max-width: 800px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+        padding: 24px;
+      }
+      input, button {
+        margin: 10px 0;
+      }
+      button {
+        padding: 10px 16px;
+        background: #0d6efd;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+      pre {
+        background: #f8f9fa;
+        padding: 16px;
+        border-radius: 8px;
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h2>فتح ملف تجريبي</h2>
+      <input type="file" id="fileInput" />
+      <br />
+      <button id="readBtn">قراءة الملف</button>
+      <pre id="output">لا يوجد ملف محدد بعد.</pre>
+    </div>
+
+    <script>
+      const fileInput = document.getElementById('fileInput');
+      const readBtn = document.getElementById('readBtn');
+      const output = document.getElementById('output');
+
+      readBtn.addEventListener('click', () => {
+        const file = fileInput.files[0];
+        if (!file) {
+          output.textContent = 'يرجى اختيار ملف أولاً.';
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function (event) {
+          output.textContent = event.target.result;
+        };
+        reader.onerror = function () {
+          output.textContent = 'حدث خطأ أثناء قراءة الملف.';
+        };
+        reader.readAsText(file);
+      });
+    </script>
+  </body>
+</html>
