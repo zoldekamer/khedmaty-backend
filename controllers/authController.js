@@ -477,11 +477,16 @@ exports.resetPassword = async (req, res) => {
   }
 };
 
+function hasTwilioConfiguration() {
+  const { TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_FROM_NUMBER } = process.env;
+  return /^AC[a-f\d]{32}$/i.test(TWILIO_ACCOUNT_SID || '')
+    && Boolean(TWILIO_AUTH_TOKEN?.trim())
+    && /^\+[1-9]\d{7,14}$/.test(TWILIO_FROM_NUMBER || '');
+}
+
 async function sendTwilioOtp(phoneNumber, otp) {
   const { TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_FROM_NUMBER } = process.env;
-  if (!TWILIO_ACCOUNT_SID || !TWILIO_AUTH_TOKEN || !TWILIO_FROM_NUMBER) {
-    return false;
-  }
+  if (!hasTwilioConfiguration()) return false;
   if (typeof fetch !== 'function') {
     console.error('OTP delivery requires a Node.js runtime with fetch support');
     return false;
@@ -530,6 +535,12 @@ exports.sendOTP = async (req, res) => {
 
   if (process.env.OTP_MODE !== 'twilio' || !/^\+[1-9]\d{7,14}$/.test(phoneNumber)) {
     return res.status(503).json({ success: false, message: 'OTP delivery is not configured for this phone number' });
+  }
+  if (!hasTwilioConfiguration()) {
+    return res.status(503).json({
+      success: false,
+      message: 'إرسال رموز SMS غير مهيأ على الخادم. أكمل إعداد بيانات Twilio.'
+    });
   }
   if (!process.env.JWT_SECRET) {
     console.error('JWT_SECRET is not configured');

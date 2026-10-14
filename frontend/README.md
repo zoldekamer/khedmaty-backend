@@ -15,3 +15,11 @@
 يمكن تغيير عنوان API باستخدام `VITE_API_URL` عند بناء الواجهة أو تشغيلها.
 
 وضع OTP التجريبي الموثق في ملف README الرئيسي مخصص للتطوير المحلي فقط.
+
+## النشر على Vercel
+
+اربط المستودع في Vercel واضبط `Root Directory` على `frontend`، وأمر البناء
+`npm run build` ومجلد الإخراج `dist`. أضف متغير البيئة `VITE_API_URL` إلى عنوان API
+العام على Render مع `/api`، مثل `https://your-api.onrender.com/api`. بعد ظهور رابط
+Vercel النهائي، أضف أصله نفسه فقط إلى `CORS_ORIGINS` واضبط `FRONTEND_URL` في إعدادات
+خدمة Render، ثم أعد نشر الخادم.

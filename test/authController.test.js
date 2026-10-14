@@ -162,6 +162,7 @@ test('Twilio OTP is delivered, verified once, and rejected on replay', async () 
   const unconfigured = mockResponse();
   await sendOTP({ body: { phoneNumber: '+962790000001' } }, unconfigured);
   assert.equal(unconfigured.statusCode, 503);
+  assert.match(unconfigured.body.message, /Twilio/);
   assert.equal(challenges.has('+962790000001'), false);
 });
 
